@@ -1,6 +1,7 @@
 package com.example.demo.model.dto;
 
 import com.example.demo.model.entity.FactorCombinationEntity;
+import com.example.demo.model.entity.MainFactorEntity;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +23,6 @@ public class TestResultDTO {
     private Date testDate;
 
     private List<FactorCombinationDTO> factorCombinations;
+
+    private MainFactorDTO mainFactor;
 }

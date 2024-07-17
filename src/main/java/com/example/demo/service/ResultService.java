@@ -2,10 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.dto.TestResultDTO;
 import com.example.demo.model.entity.*;
-import com.example.demo.repository.FactorCombinationRepository;
-import com.example.demo.repository.OngoingTestAnswersRepository;
-import com.example.demo.repository.OngoingTestsRepository;
-import com.example.demo.repository.TestResultsRepository;
+import com.example.demo.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +25,15 @@ public class ResultService {
     private final TestResultsRepository testResultsRepository;
     private final FactorCombinationRepository factorCombinationRepository;
     private final ObjectMapper objectMapper;
+    private final MainFactorRepository mainFactorRepository;
     private OngoingTestEntity ongoingTestEntity;
 
     public List<TestResultDTO> getUserTestsResults() {
         Optional<List<TestResultsEntity>> optionalTestResultsEntities = testResultsRepository.findAllByUserEntityOrderByTestDateDescTestResultIdDesc(userService.getLoggedUser());
 
         setTestResultFactorCombinations(optionalTestResultsEntities.orElseThrow());
+
+        setMainFactor(optionalTestResultsEntities.orElseThrow());
 
         return optionalTestResultsEntities
                 .map(testResultsEntities ->
@@ -46,8 +46,25 @@ public class ResultService {
 
     private void setTestResultFactorCombinations(List<TestResultsEntity> testResultsEntities) {
         testResultsEntities.forEach(testResultsEntity -> {
-            testResultsEntity.setFactorCombinations(factorCombinationRepository.findFactorCombinationByTestResultId(testResultsEntity.getTestResultId()));
+            testResultsEntity.setFactorCombinations(List.of(factorCombinationRepository.findFactorCombinationByTestResultId(testResultsEntity.getTestResultId()).get(0)));
         });
+    }
+
+    private void setMainFactor(List<TestResultsEntity> testResultsEntities) {
+        testResultsEntities.forEach(testResultsEntity -> {
+            testResultsEntity.setMainFactor(mainFactorRepository.findByFactor(getMainFactor(testResultsEntity)).orElseThrow());
+        });
+    }
+
+    private String getMainFactor(TestResultsEntity testResultsEntity) {
+        List<FactorEntity> factorEntities = getFactorEntityList(testResultsEntity);
+
+        return factorEntities
+                .stream()
+                .sorted(Comparator.comparing(FactorEntity::getValue).thenComparing(FactorEntity::getFactorOrder))
+                .toList()
+                .get(factorEntities.size() - 1)
+                .getFactor();
     }
 
     public TestResultsEntity processFinishedTestResult() {
@@ -76,28 +93,13 @@ public class ResultService {
     }
 
     private void setFactorCombinations(TestResultsEntity testResultsEntity) {
-        FactorEntity factorEntityD = new FactorEntity();
-        factorEntityD.setFactor("D");
-        factorEntityD.setValue(testResultsEntity.getDFactor());
-
-        FactorEntity factorEntityI = new FactorEntity();
-        factorEntityD.setFactor("I");
-        factorEntityD.setValue(testResultsEntity.getIFactor());
-
-        FactorEntity factorEntityS = new FactorEntity();
-        factorEntityD.setFactor("S");
-        factorEntityD.setValue(testResultsEntity.getSFactor());
-
-        FactorEntity factorEntityC = new FactorEntity();
-        factorEntityD.setFactor("C");
-        factorEntityD.setValue(testResultsEntity.getCFactor());
-
-        List<FactorEntity> factorEntities = List.of(factorEntityD, factorEntityI, factorEntityS, factorEntityC);
+        List<FactorEntity> factorEntities = getFactorEntityList(testResultsEntity);
 
         factorEntities = factorEntities.stream()
                 .sorted(Comparator.comparing(FactorEntity::getValue))
                 .map(this::classifyFactorBasedOnValue)
                 .collect(Collectors.toList());
+        Collections.reverse(factorEntities);
 
         List<String> factorCombinationToRetrieve = new ArrayList<>();
 
@@ -115,9 +117,12 @@ public class ResultService {
                 factorCombinationToRetrieve
                         .stream()
                         .map(factorCombination ->
-                                factorCombinationRepository.findFactorCombinationEntityByFactorCombination(factorCombination).orElseThrow())
+                                factorCombinationRepository.findFactorCombinationEntityByFactorCombination(factorCombination).orElse(null))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList())
         );
+
+        testResultsEntity.setFactorCombinations(testResultsEntity.getFactorCombinations());
     }
 
     private FactorEntity classifyFactorBasedOnValue(FactorEntity factorEntity) {
@@ -188,7 +193,33 @@ public class ResultService {
         };
     }
 
+    @Transactional
     public void deleteAnswersFromProcessedTest() {
         ongoingTestAnswersRepository.deleteAllByOngoingTestEntity(ongoingTestEntity);
+        ongoingTestsRepository.delete(ongoingTestEntity);
+    }
+
+    private List<FactorEntity> getFactorEntityList(TestResultsEntity testResultsEntity) {
+        FactorEntity factorEntityD = new FactorEntity();
+        factorEntityD.setFactor("D");
+        factorEntityD.setFactorOrder(4);
+        factorEntityD.setValue(testResultsEntity.getDFactor());
+
+        FactorEntity factorEntityI = new FactorEntity();
+        factorEntityI.setFactor("I");
+        factorEntityI.setFactorOrder(3);
+        factorEntityI.setValue(testResultsEntity.getIFactor());
+
+        FactorEntity factorEntityS = new FactorEntity();
+        factorEntityS.setFactor("S");
+        factorEntityS.setFactorOrder(2);
+        factorEntityS.setValue(testResultsEntity.getSFactor());
+
+        FactorEntity factorEntityC = new FactorEntity();
+        factorEntityC.setFactor("C");
+        factorEntityC.setFactorOrder(1);
+        factorEntityC.setValue(testResultsEntity.getCFactor());
+
+        return List.of(factorEntityD, factorEntityI, factorEntityS, factorEntityC);
     }
 }

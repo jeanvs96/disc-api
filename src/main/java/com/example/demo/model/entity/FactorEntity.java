@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class FactorEntity {
     private String factor;
+    private Integer factorOrder;
     private Integer value;
 }

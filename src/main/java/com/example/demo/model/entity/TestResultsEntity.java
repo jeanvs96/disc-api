@@ -50,4 +50,6 @@ public class TestResultsEntity {
     )
     private List<FactorCombinationEntity> factorCombinations;
 
+    @Transient
+    private MainFactorEntity mainFactor;
 }
