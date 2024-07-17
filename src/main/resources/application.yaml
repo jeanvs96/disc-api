@@ -3,8 +3,14 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-init-sql: set schema ''
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: disc
   mail:
     host: smtp.gmail.com
     port: 587
@@ -14,15 +20,15 @@ spring:
           auth: true
           starttls:
             enable: true
-    username: jean.v.s.backup@gmail.com
-    password: xbne skmg vjrq zfir
+    username: ${EMAIL_USER}
+    password: ${EMAIL_PASSWORD}
   jackson:
     serialization:
       fail-on-empty-beans: false
 
 
 jwt:
-#  expiration: 5000
+  secret: ${JWT_SECRET}
   expiration: 86400000
   email:
     expiration: 86400000
@@ -30,4 +36,3 @@ jwt:
 
 server:
   port: 8080
-

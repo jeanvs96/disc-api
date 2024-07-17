@@ -8,5 +8,44 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Project
+        run: mvn clean install
+
+      - name: Extract Project version
+        id: project
+        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+      - name: Login Docker Hub
+        run: docker login -u ${{ vars.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ vars.REGISTRY_USERNAME }}/disc:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Login Docker Hub
+        run: docker login -u ${{ vars.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Pull Image From Docker Hub
+        run: docker pull ${{ vars.REGISTRY_USERNAME }}/disc:latest
+
+      - name: Remove Docker Container
+        run: docker rm -f disc
+
+      - name: Run Docker Container
+        run: docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL='${{secrets.DATABASE_URL}}' -e EMAIL_USER='${{secrets.EMAIL_USER}}' -e EMAIL_PASSWORD='${{secrets.EMAIL_PASSWORD}}' -e JWT_SECRET='${{secrets.JWT_SECRET}}' --name disc ${{ vars.REGISTRY_USERNAME }}/disc
