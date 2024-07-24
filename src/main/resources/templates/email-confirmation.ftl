@@ -153,7 +153,7 @@
             <div class="main-sections final-main-section">
                 <section class="content-section">
                     <h3>Para ativar a sua conta, clique no botão abaixo:</h3>
-                    <a class="to-uppercase btn-confirmation" href="http://localhost:4200/password-recovery" target="_blank">Confirmar email</a>
+                    <a class="to-uppercase btn-confirmation" href="http://18.117.177.204:4200/password-recovery" target="_blank">Confirmar email</a>
                 </section>
         
                 <section class="image-section">

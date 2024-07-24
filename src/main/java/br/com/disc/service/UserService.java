@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
@@ -38,9 +41,14 @@ public class UserService {
     private String expiration;
 
     public TokenDTO signUp(SignUpRequestDTO signUpRequestDTO) throws MessagingException, TemplateException, IOException {
+        log.info("SIGNUP REQUEST PAYLOAD: " + objectMapper.writeValueAsString(signUpRequestDTO));
+
         UserEntity newUser = buildUserEntity(signUpRequestDTO);
         encodePassword(newUser);
         setNewUserDefaultRole(newUser);
+
+        log.info("NEW USER TO SAVE: " + objectMapper.writeValueAsString(newUser));
+
         userRepository.save(newUser);
 
         emailService.sendAccountConfirmationEmail(newUser);
@@ -85,6 +93,7 @@ public class UserService {
         return "";
     }
 
+    @SneakyThrows
     public TokenDTO confirmUserEmail() {
         UserEntity userEntity = getLoggedUser();
         userEntity.getRolesEntities().add(rolesRepository.findByRoleName(RoleNameEnum.VERIFIED_USER.name()));

@@ -3,11 +3,14 @@ package br.com.disc.security;
 import br.com.disc.model.dto.TokenDTO;
 import br.com.disc.model.entity.RolesEntity;
 import br.com.disc.model.entity.UserEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,13 +21,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
     private static final String ROLES = "roles";
     private static final String BEARER = "Bearer ";
+    private final ObjectMapper objectMapper;
 
-    public TokenDTO getToken(UserEntity userEntity, String expiration) {
+    public TokenDTO getToken(UserEntity userEntity, String expiration) throws JsonProcessingException {
+        log.info("GENERATE TOKEN: " + objectMapper.writeValueAsString(userEntity));
         Date now = new Date();
         Date tokenExpirationDate = new Date(now.getTime() + Long.parseLong(expiration));
 
@@ -37,6 +43,8 @@ public class TokenService {
                 .setExpiration(tokenExpirationDate)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+
+        log.info("GENERATED TOKEN: " + objectMapper.writeValueAsString(token));
 
         return new TokenDTO(BEARER + token);
     }

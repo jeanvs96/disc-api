@@ -5,6 +5,7 @@ import br.com.disc.model.dto.SignInRequestDTO;
 import br.com.disc.model.dto.SignInWithAuthenticationCodeDTO;
 import br.com.disc.model.dto.TokenDTO;
 import br.com.disc.service.SignInService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,12 @@ public class AuthController {
     private final SignInService loginService;
 
     @PostMapping()
-    public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInRequestDTO loginRequestDTO) {
+    public ResponseEntity<TokenDTO> signIn(@RequestBody @Valid SignInRequestDTO loginRequestDTO) throws JsonProcessingException {
         return new ResponseEntity<>(loginService.signIn(loginRequestDTO), HttpStatus.OK);
     }
 
     @PostMapping("/code")
-    public ResponseEntity<TokenDTO> signInWithAuthenticationCode(@RequestBody @Valid SignInWithAuthenticationCodeDTO loginRequestDTO) throws AuthException {
+    public ResponseEntity<TokenDTO> signInWithAuthenticationCode(@RequestBody @Valid SignInWithAuthenticationCodeDTO loginRequestDTO) throws AuthException, JsonProcessingException {
         return new ResponseEntity<>(loginService.signInWithAuthenticationCode(loginRequestDTO), HttpStatus.OK);
     }
 

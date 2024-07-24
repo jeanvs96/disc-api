@@ -47,7 +47,7 @@
                     font-size: 1.2rem;"
                 >
                     <h3 style="padding-bottom: 1rem; padding-top: 2rem;">Para ativar a sua conta, clique no botão abaixo:</h3>
-                    <a href="http://localhost:4200/confirm-email" target="_blank"
+                    <a href="http://18.117.177.204:4200/confirm-email" target="_blank"
                        style="
                             max-width: 200px;
                             background-color: #2f86d8 !important;
