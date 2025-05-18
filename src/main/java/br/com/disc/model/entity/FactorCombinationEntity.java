@@ -19,11 +19,26 @@ public class FactorCombinationEntity {
     @Column(name = "factor_combination")
     private String factorCombination;
 
+    @Column(name = "combination_details")
+    private String combinationDetails;
+
     @Column(name = "title")
     private String title;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "characteristics")
+    private String characteristics;;
+
+    @Column(name = "strengths")
+    private String strengths;
+
+    @Column(name = "challenges")
+    private String challenges;
+
+    @Column(name = "stands_out")
+    private String standsOut;
 
     @ManyToMany
     @JoinTable(

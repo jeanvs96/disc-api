@@ -12,14 +12,16 @@ spring:
       hibernate:
         default_schema: disc
   mail:
-    host: smtp.gmail.com
-    port: 587
+    host: smtps.uhserver.com
+    port: 465
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
-            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
     username: ${EMAIL_USER}
     password: ${EMAIL_PASSWORD}
   jackson:

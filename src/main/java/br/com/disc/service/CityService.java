@@ -1,12 +1,21 @@
 package br.com.disc.service;
 
 import br.com.disc.model.dto.CityDTO;
+import br.com.disc.model.dto.StateDTO;
 import br.com.disc.model.entity.CityEntity;
+import br.com.disc.model.entity.IBGECity;
+import br.com.disc.model.entity.IBGEState;
 import br.com.disc.model.entity.StateEntity;
 import br.com.disc.repository.CityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -14,7 +23,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CityService {
+    private static final String IBGE_CITY_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/";
     private final CityRepository cityRepository;
     private final StateService stateService;
     private final ObjectMapper objectMapper;
@@ -30,5 +41,34 @@ public class CityService {
 
     private List<CityDTO> transformToDto(Optional<List<CityEntity>> cityEntities) throws NoSuchElementException {
         return cityEntities.orElseThrow().stream().map(cityEntity -> objectMapper.convertValue(cityEntity, CityDTO.class)).collect(Collectors.toList());
+    }
+
+    public void updateDataBase() {
+        RestTemplate restTemplate = new RestTemplate();
+        List<StateEntity> stateEntities = stateService.getAllStatesEntities();
+
+        log.info("Started cities update");
+
+        stateEntities.forEach(stateEntity -> {
+            List<IBGECity> ibgeCityResponse = restTemplate.exchange(
+                    IBGE_CITY_URL + stateEntity.getIbgeId() + "/municipios",
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<IBGECity>>() {}).getBody();
+
+            ibgeCityResponse.forEach(ibgeCity -> {
+
+                cityRepository.save(CityEntity
+                        .builder()
+                        .cityId(ibgeCity.getId())
+                        .name(ibgeCity.getName())
+                        .stateEntity(stateEntity)
+                        .build()
+                );
+            });
+
+        });
+
+        log.info("Updated cities with success");
     }
 }

@@ -94,13 +94,19 @@ public class UserService {
     }
 
     @SneakyThrows
-    public TokenDTO confirmUserEmail() {
+    public TokenDTO confirmUserEmail(AccountConfirmationDTO accountConfirmationDTO) {
+        AuthenticationCode authenticationCode = authenticationCodeService.findByCode(accountConfirmationDTO.getCode());
         UserEntity userEntity = getLoggedUser();
-        userEntity.getRolesEntities().add(rolesRepository.findByRoleName(RoleNameEnum.VERIFIED_USER.name()));
 
-        userRepository.save(userEntity);
+        if (authenticationCode.getUserEntity().getEmail().equals(userEntity.getEmail())) {
+            userEntity.getRolesEntities().add(rolesRepository.findByRoleName(RoleNameEnum.VERIFIED_USER.name()));
 
-        return tokenService.getToken(userEntity, expiration);
+            userRepository.save(userEntity);
+
+            return tokenService.getToken(userEntity, expiration);
+        }
+
+        throw new RuntimeException();
     }
 
     public UserDTO getUserFirstName() {

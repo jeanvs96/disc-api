@@ -23,8 +23,8 @@
                     border-radius: 3rem 0 0 0 !important;
                     box-shadow: 10px 10px 31px -5px rgba(0,0,0,1);"
             >
-                <th style="background: #FF0266;">
-                    <h1>Olá, ${username}!</h1>
+                <th style="background: #141414;">
+                    <h1>Utilize o código abaixo para ativar a sua conta:</h1>
                 </th>
             </tr>
 
@@ -36,7 +36,7 @@
 
 
 
-            <tr style="background: #0d423d; box-shadow: 10px 10px 31px -5px rgba(0,0,0,1)">
+            <tr style="background: #222222; box-shadow: 10px 10px 31px -5px rgba(0,0,0,1);">
                 <td style="
                     min-height: 450px;
                     max-width: 100%;
@@ -44,23 +44,24 @@
                     padding: 1rem 4rem;
                     color: #fff7e2;
                     text-align: center;
-                    font-size: 1.2rem;"
-                >
-                    <h3 style="padding-bottom: 1rem; padding-top: 2rem;">Para ativar a sua conta, clique no botão abaixo:</h3>
-                    <a href="http://18.117.177.204:4200/confirm-email" target="_blank"
-                       style="
-                            max-width: 200px;
+                    font-size: 1.2rem;">
+                    <h3 style="padding-bottom: 1rem; padding-top: 2rem;">Se você não solicitou este código, considere alterar a sua senha!</h3>
+                    <div style="max-width: 200px; margin: auto;">
+                        <p
+                                style="
                             background-color: #2f86d8 !important;
                             color: #fff7e2 !important;
                             font-size: 1rem;
-                            padding: .5rem;
+                            padding: 1rem;
                             border: none;
                             border-radius: .5rem;
                             box-shadow: 5px 5px 15px -5px rgba(0,0,0,1);
-                            text-decoration: none;
                             text-transform: uppercase;
-                            cursor: pointer;"
-                    >Confirmar email</a>
+                            font-weight: bold;
+                            ;"
+                        >${code}</p>
+                    </div>
+
                     <div style="margin-top: 4.5rem; margin-bottom: 4rem; border-top: 1px solid;"></div>
                     <img style="margin-top: 1rem; width: 150px;" src="cid:logo.png" alt="">
                     <span style="display: block; padding-top: 1rem; font-size: 1.5rem; color: #fff7e2;" >P E R S O N A</span>

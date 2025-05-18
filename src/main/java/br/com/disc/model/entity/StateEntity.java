@@ -1,14 +1,16 @@
 package br.com.disc.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity(name = "state")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StateEntity {
 
     @Id
@@ -19,6 +21,9 @@ public class StateEntity {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "ibge_id")
+    private Integer ibgeId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stateEntity")
     @Transient

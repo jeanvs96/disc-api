@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @PutMapping("/confirm-email")
-    public ResponseEntity<TokenDTO> confirmEmail() {
-        return new ResponseEntity<>(userService.confirmUserEmail(), HttpStatus.ACCEPTED);
+    public ResponseEntity<TokenDTO> confirmEmail(@RequestBody AccountConfirmationDTO accountConfirmationDTO) {
+        return new ResponseEntity<>(userService.confirmUserEmail(accountConfirmationDTO), HttpStatus.ACCEPTED);
     }
 
 }

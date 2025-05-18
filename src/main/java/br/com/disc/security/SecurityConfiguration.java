@@ -39,11 +39,13 @@ public class SecurityConfiguration {
                 .requestMatchers(GET,"/test/check-ongoing-test").hasAnyAuthority(VERIFIED_USER.name(), USER.name())
                 .requestMatchers(DELETE,"/test/delete-ongoing-test").hasAnyAuthority(VERIFIED_USER.name(), USER.name())
                 .requestMatchers(POST,"/email/account-confirmation").hasAnyAuthority(ADMIN.name(), USER.name())
+                .requestMatchers(POST,"/payments/card").hasAnyAuthority(ADMIN.name(), USER.name(), VERIFIED_USER.name())
+                .requestMatchers(POST,"/payments/pix").hasAnyAuthority(ADMIN.name(), USER.name(), VERIFIED_USER.name())
                 .anyRequest()
                 .authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+                . addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
             );
 
         return http.build();
@@ -80,8 +82,10 @@ public class SecurityConfiguration {
                 "/sign-in/code",
                 "/user/sign-up",
                 "/states",
+                "/states/update",
                 "/hello",
                 "/cities/**",
+                "cities/update",
                 "/education-levels",
                 "/fields-of-interest",
                 "/email/authentication-code",

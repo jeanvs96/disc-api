@@ -19,6 +19,8 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static br.com.disc.model.enums.EmailEnum.VERIFY_ACCOUNT;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,9 +40,11 @@ public class EmailService {
     }
 
     public void sendAccountConfirmationEmail(UserEntity userEntity) throws MessagingException, TemplateException, IOException {
+        AuthenticationCode authenticationCode = authenticationCodeService.getAuthenticationCode(userEntity);
+
         HashMap<String, String> emailData = new HashMap<>();
-        emailData.put("username", userEntity.getUsername());
-        sendEmail(userEntity.getEmail(), emailData, EmailEnum.VERIFY_ACCOUNT);
+        emailData.put("code", authenticationCode.getCode());
+        sendEmail(userEntity.getEmail(), emailData, VERIFY_ACCOUNT);
     }
 
     public void sendEmail(String sendTo, HashMap<String, String> data, EmailEnum emailEnum) throws MessagingException, TemplateException, IOException {

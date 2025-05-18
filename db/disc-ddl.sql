@@ -1,4 +1,4 @@
---CREATE schema disc;
+CREATE schema disc;
 
 CREATE SEQUENCE seq_users
 	INCREMENT 1
@@ -6,7 +6,7 @@ CREATE SEQUENCE seq_users
 
 CREATE TABLE users (
 	user_id bigint NOT null PRIMARY KEY DEFAULT nextval('disc.seq_users'),
-	username text NOT NULL unique,
+	username text NOT NULL,
 	email text not null unique,
 	password text NOT NULL,
 	status bool not null);
@@ -254,3 +254,14 @@ CREATE TABLE disc.main_factor_description (
 	keywords text NOT NULL,
 	CONSTRAINT main_factor_description_pkey PRIMARY KEY (main_factor_description_id)
 );
+
+ALTER TABLE disc.factor_combination_description
+    ADD COLUMN characteristics TEXT NOT NULL DEFAULT '',
+ADD COLUMN strengths TEXT NOT NULL DEFAULT '',
+ADD COLUMN challenges TEXT NOT NULL DEFAULT '';
+
+ALTER TABLE disc.factor_combination_description
+    ADD COLUMN combination_details TEXT NOT NULL DEFAULT '';
+
+ALTER TABLE disc.factor_combination_description
+    ADD COLUMN stands_out TEXT NOT NULL DEFAULT '';

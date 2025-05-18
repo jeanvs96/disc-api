@@ -7,6 +7,11 @@ import lombok.Setter;
 @Setter
 public class FactorCombinationDTO {
     private String factorCombination;
+    private String combinationDetails;
     private String title;
     private String description;
+    private String characteristics;
+    private String strengths;
+    private String challenges;
+    private String standsOut;
 }

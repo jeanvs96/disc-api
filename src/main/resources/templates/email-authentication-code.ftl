@@ -23,7 +23,7 @@
                     border-radius: 3rem 0 0 0 !important;
                     box-shadow: 10px 10px 31px -5px rgba(0,0,0,1);"
             >
-                <th style="background: #FF0266;">
+                <th style="background: #141414;">
                     <h1>Utilize o código abaixo:</h1>
                 </th>
             </tr>
@@ -36,7 +36,7 @@
 
 
 
-            <tr style="background: #0d423d; box-shadow: 10px 10px 31px -5px rgba(0,0,0,1);">
+            <tr style="background: #222222; box-shadow: 10px 10px 31px -5px rgba(0,0,0,1);">
                 <td style="
                     min-height: 450px;
                     max-width: 100%;

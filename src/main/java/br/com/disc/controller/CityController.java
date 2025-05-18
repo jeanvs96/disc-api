@@ -19,4 +19,10 @@ public class CityController {
     public ResponseEntity<List<CityDTO>> getAllById(@PathVariable String state) {
         return new ResponseEntity<>(cityService.findAllByStateName(state), HttpStatus.OK);
     }
+
+    @GetMapping("/update")
+    public ResponseEntity<List<CityDTO>> updateStatesAndCities() {
+        cityService.updateDataBase();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
