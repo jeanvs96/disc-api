@@ -35,6 +35,5 @@ jwt:
   email:
     expiration: 86400000
 
-
 server:
   port: 8080
