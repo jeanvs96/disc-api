@@ -28,13 +28,11 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
-
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000
   email:
     expiration: 86400000
-
 
 server:
   port: 8080
