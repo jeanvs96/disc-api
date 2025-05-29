@@ -265,3 +265,16 @@ ALTER TABLE disc.factor_combination_description
 
 ALTER TABLE disc.factor_combination_description
     ADD COLUMN stands_out TEXT NOT NULL DEFAULT '';
+
+CREATE SEQUENCE seq_feedback
+    INCREMENT 1
+	START 1;
+
+CREATE TABLE feedback (
+                       feedback_id bigint NOT null PRIMARY KEY DEFAULT nextval('disc.seq_feedback'),
+                       comment text NOT NULL,
+                       rating bigint not null,
+                       user_id bigint not null,
+                       CONSTRAINT fk_feedback_user
+                           FOREIGN KEY (user_id)
+                               REFERENCES users(user_id));

@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                 .requestMatchers(POST,"/email/account-confirmation").hasAnyAuthority(ADMIN.name(), USER.name())
                 .requestMatchers(POST,"/payments/card").hasAnyAuthority(ADMIN.name(), USER.name(), VERIFIED_USER.name())
                 .requestMatchers(POST,"/payments/pix").hasAnyAuthority(ADMIN.name(), USER.name(), VERIFIED_USER.name())
+                .requestMatchers(POST,"/feedback").hasAnyAuthority(VERIFIED_USER.name(), USER.name())
                 .anyRequest()
                 .authenticated()
                 .and()

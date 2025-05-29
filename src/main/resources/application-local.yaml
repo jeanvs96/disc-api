@@ -22,8 +22,8 @@ spring:
             port: 465
             class: javax.net.ssl.SSLSocketFactory
             fallback: false
-    username: ${EMAIL_USER}
-    password: ${EMAIL_PASSWORD}
+    username: ${EMAIL_USER:contato@persona-disc.com}
+    password: ${EMAIL_PASSWORD:08830540}
   jackson:
     serialization:
       fail-on-empty-beans: false

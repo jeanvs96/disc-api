@@ -99,33 +99,37 @@ public class ResultService {
         List<FactorEntity> factorEntities = getFactorEntityList(testResultsEntity);
 
         factorEntities = factorEntities.stream()
-                .sorted(Comparator.comparing(FactorEntity::getValue))
+                .sorted(Comparator
+                        .comparing(FactorEntity::getValue, Comparator.reverseOrder())
+                        .thenComparing(FactorEntity::getFactorOrder, Comparator.reverseOrder()))
                 .map(this::classifyFactorBasedOnValue)
                 .collect(Collectors.toList());
-        Collections.reverse(factorEntities);
 
         List<String> factorCombinationToRetrieve = new ArrayList<>();
 
-        for (int i = 0; i < (factorEntities.size() - 1); i++) {
-            for (int j = i + 1; j < factorEntities.size(); j++) {
-                if (factorEntities.get(i).getValue().equals(factorEntities.get(j).getValue())) {
-                    factorCombinationToRetrieve.add(factorEntities.get(i).getFactor() + "=" + factorEntities.get(j).getFactor());
-                } else {
-                    factorCombinationToRetrieve.add(factorEntities.get(i).getFactor() + factorEntities.get(j).getFactor());
-                }
+        String factorCombination;
+
+        if (factorEntities.get(0).getValue().equals(factorEntities.get(1).getValue())) {
+            factorCombination = factorEntities.get(0).getFactor() + "=" + factorEntities.get(1).getFactor();
+            if (factorEntities.get(0).getValue().equals(factorEntities.get(2).getValue())) {
+                factorCombination = factorCombination + "=" + factorEntities.get(1).getFactor();
             }
+        } else {
+            factorCombination = factorEntities.get(0).getFactor() + factorEntities.get(1).getFactor();
         }
+
+        factorCombinationToRetrieve.add(factorCombination);
 
         testResultsEntity.setFactorCombinations(
                 factorCombinationToRetrieve
                         .stream()
-                        .map(factorCombination ->
-                                factorCombinationRepository.findFactorCombinationEntityByFactorCombination(factorCombination).orElse(null))
+                        .map(factorCombinationItem ->
+                                factorCombinationRepository.findFactorCombinationEntityByFactorCombination(factorCombinationItem).orElse(null))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList())
         );
 
-        testResultsEntity.setFactorCombinations(testResultsEntity.getFactorCombinations());
+        testResultsEntity.setFactorCombinations(List.of(testResultsEntity.getFactorCombinations().get(0)));
     }
 
     private FactorEntity classifyFactorBasedOnValue(FactorEntity factorEntity) {

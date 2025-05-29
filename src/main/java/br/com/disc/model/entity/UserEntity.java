@@ -65,6 +65,9 @@ public class UserEntity implements UserDetails {
     private List<TestResultsEntity> resultEntity;
 
     @Transient
+    private List<FeedbackEntity> feedbackEntities;
+
+    @Transient
     private OngoingTestEntity ongoingTestEntity;
 
     @Override
