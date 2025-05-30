@@ -40,6 +40,18 @@ public class FactorCombinationEntity {
     @Column(name = "stands_out")
     private String standsOut;
 
+    @Column(name = "report_intro")
+    private String reportIntro;;
+
+    @Column(name = "job_search")
+    private String jobSearch;
+
+    @Column(name = "work_environment")
+    private String workEnvironment;
+
+    @Column(name = "long_term_career")
+    private String longTermCareer;
+
     @ManyToMany
     @JoinTable(
             name = "test_results_factor_combination",

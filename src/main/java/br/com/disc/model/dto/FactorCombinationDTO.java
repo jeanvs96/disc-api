@@ -1,5 +1,6 @@
 package br.com.disc.model.dto;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +15,8 @@ public class FactorCombinationDTO {
     private String strengths;
     private String challenges;
     private String standsOut;
+    private String reportIntro;;
+    private String jobSearch;
+    private String workEnvironment;
+    private String longTermCareer;
 }
